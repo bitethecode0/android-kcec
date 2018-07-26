@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:id="@+id/relLayout1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <include layout="@layout/snippet_top_navigate_back"/>
+            </RelativeLayout>
+
+            <com.example.joon.kcec.Utils.SquareImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/post_image"
+                android:layout_below="@+id/relLayout1"
+
+                android:scaleType="centerCrop"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@+id/post_image"
+                android:id="@+id/interaction_icons">
+                <!--not decided parts-->
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@+id/interaction_icons"
+                android:id="@+id/likes_bar">
+                <!--not decided parts-->
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/likes_bar"
+                >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="5dp"
+                    android:id="@+id/captions"
+                    android:textSize="18sp"
+                    android:text="test caption"
+                    android:textColor="@color/black"
+                    android:layout_marginStart="5dp"
+                    />
+
+            </RelativeLayout>
+
+
+
+
+        </RelativeLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+
+
+
+</android.support.design.widget.CoordinatorLayout>

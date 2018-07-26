@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AccountSettings.AccountActivity">
+
+    <include layout="@layout/layout_center_viewpager"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/relLayoutParent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/relLayout1">
+            <include layout="@layout/snippet_top_accountsetting_toolbar" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/relLayout1"
+            android:layout_marginBottom="50dp"
+            android:id="@+id/relLayout2"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="5dp"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Account Settings"
+                android:textColor="@color/black"
+                android:textSize="24sp"
+
+                android:id="@+id/account_settings_tv"
+                />
+
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/account_settings_tv"
+                android:id="@+id/listView">
+
+            </ListView>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

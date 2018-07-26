@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "998852982975",
+    "firebase_url": "https://kcec-mobile-app.firebaseio.com",
+    "project_id": "kcec-mobile-app",
+    "storage_bucket": "kcec-mobile-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:998852982975:android:3f2ef1df0efce282",
+        "android_client_info": {
+          "package_name": "com.example.joon.kcec"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "998852982975-a60hp4m23nqpl4qkfk8hf02c0e1pbff6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.joon.kcec",
+            "certificate_hash": "ab0fea42c2b84ff10a41a1012a5655112e84b0a3"
+          }
+        },
+        {
+          "client_id": "998852982975-bl4ltgiaq7enh0ognfoobrien8comk2g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQiMVoAbnFr9nXLeRljPbCcQQMnzq8u2c"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "998852982975-bl4ltgiaq7enh0ognfoobrien8comk2g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

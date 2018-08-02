@@ -43,14 +43,14 @@ public class Photo implements Parcelable{
         this.image_path = image_path;
     }
 
-//    public String getCaption() {
-//        return caption;
-//    }
-//
-//    public void setCaption(String caption) {
-//        this.caption = caption;
-//    }
-//
+    public String getCaption() {
+        return caption;
+    }
+
+    public void setCaption(String caption) {
+        this.caption = caption;
+    }
+
 //    public String getPhoto_id() {
 //        return photo_id;
 //    }

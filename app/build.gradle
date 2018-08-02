@@ -9,6 +9,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
     }
     buildTypes {
         release {
@@ -34,15 +35,20 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:16.0.1'
     implementation 'com.google.firebase:firebase-storage:16.0.1'
 
+    //recycler view
+    implementation 'com.android.support:recyclerview-v7:27.1.1'
     // circle image view
     implementation 'de.hdodenhof:circleimageview:2.2.0'
     // universal image loader
     implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
-
-    //recycler view
-    implementation 'com.android.support:recyclerview-v7:27.1.1'
-    //picasso
+    //picasso image
     implementation 'com.squareup.picasso:picasso:2.71828'
+
+    //calendar view
+    implementation 'com.roomorama:caldroid:3.0.1'
+
+    /* //calendar view
+    implementation 'com.github.sundeepk:compact-calendar-view:3.0.0'*/
 
 
 }

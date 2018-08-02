@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_back_arrow"
+            android:id="@+id/back_arrow"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="5dp"/>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="5dp"
+            android:id="@+id/saveNclose_layout">
+
+
+            <ImageView
+
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_save"
+                android:layout_gravity="end"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="5dp"
+                android:id="@+id/save_event"
+
+
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/save_event"
+                android:text="Save and close"
+                android:layout_centerVertical="true"
+                />
+
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+
+</merge>

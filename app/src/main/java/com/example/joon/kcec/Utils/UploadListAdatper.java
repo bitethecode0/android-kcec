@@ -13,9 +13,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.joon.kcec.R;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -29,15 +33,15 @@ public class UploadListAdatper extends RecyclerView.Adapter<UploadListAdatper.Vi
     private static final String TAG = "UploadListAdatper";
 
     public List<String> filenameList;
-    public List<String> fileUploadedList;
-    public List<String> imgfileUrls;
+    public static List<String> fileUploadedList;
+    public static List<String> imgfileUrls;
 
 
     public UploadListAdatper(List<String> filenameList, List<String> fileUploadedList
             , List<String> imgfileUrls){
         this.filenameList = filenameList;
-        this.fileUploadedList = fileUploadedList;
-        this.imgfileUrls = imgfileUrls;
+        UploadListAdatper.fileUploadedList = fileUploadedList;
+        UploadListAdatper.imgfileUrls = imgfileUrls;
     }
 
     @NonNull
@@ -48,31 +52,64 @@ public class UploadListAdatper extends RecyclerView.Adapter<UploadListAdatper.Vi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull Viewholder holder, int position) {
+    public void onBindViewHolder(@NonNull final Viewholder holder, int position) {
         Log.d(TAG, "onBindViewHolder: each item will be loaded here.");
         String filename = filenameList.get(position);
 //        holder.filenameView.setText(filename);
 
         String url = imgfileUrls.get(position);
 
+        Log.d(TAG, "onBindViewHolder: image url : "+url);
+
+        Log.d(TAG, "setImage: setup images.");
+        ImageLoader imageLoader = ImageLoader.getInstance();
+        imageLoader.displayImage(url, holder.postImage, new ImageLoadingListener() {
+            @Override
+            public void onLoadingStarted(String imageUri, View view) {
+                holder.mProgressBar.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                holder.mProgressBar.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                holder.mProgressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onLoadingCancelled(String imageUri, View view) {
+                holder.mProgressBar.setVisibility(View.VISIBLE);
+            }
+        });
+
+
+        //didn't work in this way
 //        Bitmap convertedBm = getBitmapFromUrl(imgfileUrls.get(position));
 //        Log.d(TAG, "onBindViewHolder: bitmap converted : "+convertedBm);
-        new AsynTaskLoadImage(holder.postImage).execute(url);
+
+
+        //before change
+//        new AsynTaskLoadImage(holder.postImage).execute(url);
         
         
-
-        if(fileUploadedList.equals("uploading")){
-
-
-
-        } else {
-
+//
+//        if(fileUploadedList.equals("uploading")){
+//
+//
+//
+//        } else {
+//
 //            holder.fileUploaedView.setImageResource(R.drawable.ic_after_upload);
-
-        }
+//
+//        }
 
 
     }
+
+
 
     @Override
     public int getItemCount() {
@@ -83,6 +120,7 @@ public class UploadListAdatper extends RecyclerView.Adapter<UploadListAdatper.Vi
     public class Viewholder extends RecyclerView.ViewHolder {
         View mView;
         public ImageView postImage;
+        public ProgressBar mProgressBar;
 //        public TextView filenameView;
 //        public ImageView fileUploaedView;
 
@@ -91,6 +129,7 @@ public class UploadListAdatper extends RecyclerView.Adapter<UploadListAdatper.Vi
             mView = itemView;
 
             postImage = mView.findViewById(R.id.uploaded_image);
+            mProgressBar = mView.findViewById(R.id.progressBar);
 //            filenameView = mView.findViewById(R.id.file_description);
 //            fileUploaedView = mView.findViewById(R.id.upload_checkmark);
 
@@ -98,26 +137,26 @@ public class UploadListAdatper extends RecyclerView.Adapter<UploadListAdatper.Vi
         }
     }
 
-  /*  public static Bitmap getBitmapFromUrl(String src){
-        try{
-            URL url = new URL(src);
-            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            return BitmapFactory.decodeStream((InputStream)url.getContent());
-
-
-
-        } catch (IOException e){
-            Log.e(TAG, "getBitmapFromUrl: IOException "+e.getMessage() );
-            return null;
-
-        } catch (Exception e){
-            Log.e(TAG, "getBitmapFromUrl: Exception"+e.getMessage() );
-            return null;
-        }
-    }*/
+//  /*  public static Bitmap getBitmapFromUrl(String src){
+//        try{
+//            URL url = new URL(src);
+//            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+//            connection.setDoInput(true);
+//            connection.connect();
+//            InputStream input = connection.getInputStream();
+//            return BitmapFactory.decodeStream((InputStream)url.getContent());
+//
+//
+//
+//        } catch (IOException e){
+//            Log.e(TAG, "getBitmapFromUrl: IOException "+e.getMessage() );
+//            return null;
+//
+//        } catch (Exception e){
+//            Log.e(TAG, "getBitmapFromUrl: Exception"+e.getMessage() );
+//            return null;
+//        }
+//    }*/
 
     public class AsynTaskLoadImage extends AsyncTask<String, Void, Bitmap>{
         private static final String TAG = "AsynTaskLoadImage";

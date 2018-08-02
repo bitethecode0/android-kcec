@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -22,25 +21,16 @@ import android.widget.Toast;
 
 import com.example.joon.kcec.Model.Photo;
 import com.example.joon.kcec.R;
+import com.example.joon.kcec.Utils.UniversalImageLoader;
 import com.example.joon.kcec.Utils.UploadListAdatper;
 import com.example.joon.kcec.Utils.ViewPostFragment;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GalleryActivity extends AppCompatActivity implements ShowAllPhotos.OnGridImageSelectedListener {
+public class GalleryActivity extends AppCompatActivity implements ShowAllPhotosFragment.OnGridImageSelectedListener
+{
 
 
 
@@ -64,12 +54,7 @@ public class GalleryActivity extends AppCompatActivity implements ShowAllPhotos.
     private static final String TAG = "GalleryActivity";
     private static final int RESULT_LOAD_IMAGE = 1;
 
-    //firebase
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthStateListener;
-    private StorageReference mStorageReference;
-    private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference myRef;
+
 
     //widgets
     private ImageView all_photos, add_newPhoto_btn;
@@ -89,7 +74,9 @@ public class GalleryActivity extends AppCompatActivity implements ShowAllPhotos.
     //upload fn
     private List<String> filenameList;
     private List<String> fileUploadedList;
+    private List<Uri> imgURIs;
     private List<String> imgfileUrls;
+    private String mAppend = "content:/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,9 +92,11 @@ public class GalleryActivity extends AppCompatActivity implements ShowAllPhotos.
          *
          *
          */
+        imgURIs = new ArrayList<>();
         imgfileUrls = new ArrayList<>();
 
-        setupFirebase();
+
+        initImageLoader();
 
         mUploadList = findViewById(R.id.recyclerView);
         filenameList = new ArrayList<>();
@@ -148,7 +137,10 @@ public class GalleryActivity extends AppCompatActivity implements ShowAllPhotos.
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, NextActivity.class);
                 Bundle args = new Bundle();
-                args.putStringArrayList(getString(R.string.image_urls), (ArrayList<String>) imgfileUrls);
+                args.putStringArrayList(getString(R.string.img_filename), (ArrayList<String>) filenameList);
+                args.putStringArrayList(getString(R.string.image_urls), (ArrayList<String>) imgfileUrls); // put img urls
+                args.putParcelableArrayList(getString(R.string.image_uris), (ArrayList < Uri>) imgURIs); //put img uris to upload to the storage
+
                 intent.putExtras(args);
 
                 startActivity(intent);
@@ -164,9 +156,9 @@ public class GalleryActivity extends AppCompatActivity implements ShowAllPhotos.
 
 
         all_photos = findViewById(R.id.all_photos);
-        if(ShowAllPhotos.photos.size()!=0){
+        if(ShowAllPhotosFragment.photos.size()!=0){
             ImageLoader imageLoader = ImageLoader.getInstance();
-            imageLoader.displayImage(ShowAllPhotos.photos.get(0).getImage_path(), all_photos);
+            imageLoader.displayImage(ShowAllPhotosFragment.photos.get(0).getImage_path(), all_photos);
         }
         all_photos.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -174,7 +166,7 @@ public class GalleryActivity extends AppCompatActivity implements ShowAllPhotos.
                 Log.d(TAG, "onClick: navigate to show all photos.");
 
                 showFrameLayout();
-                Fragment fragment = new ShowAllPhotos();
+                Fragment fragment = new ShowAllPhotosFragment();
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.frameLayout, fragment);
                 transaction.addToBackStack(getString(R.string.show_all_photos_fragmet));
@@ -198,8 +190,9 @@ public class GalleryActivity extends AppCompatActivity implements ShowAllPhotos.
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode== RESULT_LOAD_IMAGE && resultCode ==RESULT_OK){
             if(data.getClipData()!=null){
-                // multiple photos selected
-
+                /**
+                 * multiple photos selected
+                  */
 
                 filenameList.clear();
 
@@ -211,91 +204,105 @@ public class GalleryActivity extends AppCompatActivity implements ShowAllPhotos.
 
                     filenameList.add(filename);
                     fileUploadedList.add("uploading");
-
-
+                    imgURIs.add(fileUri);
+                    imgfileUrls.add(fileUri.toString());
+                    mUploadListAdatper.notifyDataSetChanged();
 
 
                     Log.d(TAG, "onActivityResult: filenameList so far : "+ filename);
-                    Log.d(TAG, "onActivityResult: image file urls so far : "+fileUri);
+                    Log.d(TAG, "onActivityResult: image file without append "+ fileUri.toString());
+                    Log.d(TAG, "onActivityResult: image file urls so far : "+imgfileUrls);
 
 
                     final int finalI = i;
                     Log.d(TAG, "onActivityResult: current index : "+finalI);
-
-                    final StorageReference fileToUpload =mStorageReference.child("photos").child("new album").child(filename);
-                    /**
-                     * upload files
-                     */
-                    UploadTask uploadTask = fileToUpload.putFile(fileUri);
-
-                    uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-                            fileUploadedList.remove(finalI);
-                            fileUploadedList.add(finalI, "done");
-
-
-                            Toast.makeText(mContext, "files succeessfully uploaded.", Toast.LENGTH_SHORT).show();
-
-
-
-
-                        }
-                    });
-
-                    Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                        @Override
-                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                            if(!task.isSuccessful()){
-                                throw  task.getException();
-                            }
-
-                            return fileToUpload.getDownloadUrl();
-                        }
-                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Uri> task) {
-                            if(!task.isSuccessful()){
-
-                            } else{
-                                Uri downloadUri = task.getResult();
-
-                                imgfileUrls.add(downloadUri.toString());
-
-                                Log.d(TAG, "onComplete: img file urls : "+imgfileUrls);
-                                mUploadListAdatper.notifyDataSetChanged();
-
-                                addNewPhotoToDatabase(downloadUri.toString());
-                            }
-                        }
-                    });
-
-
-
-
+//                    final StorageReference fileToUpload =mStorageReference.child("photos").child("new album").child(filename);
+//                    /**
+//                     * upload files
+//                     */
+//                    UploadTask uploadTask = fileToUpload.putFile(fileUri);
+//
+//                    uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                        @Override
+//                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//
+//                            fileUploadedList.remove(finalI);
+//                            fileUploadedList.add(finalI, "done");
+//
+//
+//                            Toast.makeText(mContext, "files succeessfully uploaded.", Toast.LENGTH_SHORT).show();
+//
+//
+//
+//
+//                        }
+//                    });
+//
+//                    Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+//                        @Override
+//                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+//                            if(!task.isSuccessful()){
+//                                throw  task.getException();
+//                            }
+//
+//                            return fileToUpload.getDownloadUrl();
+//                        }
+//                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<Uri> task) {
+//                            if(!task.isSuccessful()){
+//
+//                            } else{
+//                                Uri downloadUri = task.getResult();
+//
+//                                imgfileUrls.add(downloadUri.toString());
+//
+//                                Log.d(TAG, "onComplete: img file urls : "+imgfileUrls);
+//                                mUploadListAdatper.notifyDataSetChanged();
+//
+//                                addNewPhotoToDatabase(downloadUri.toString());
+//                            }
+//                        }
+//                    });
+//
                 }
+
+//                fileUploadedList.clear();
+
                 Toast.makeText(mContext, "Selected multiple files.", Toast.LENGTH_SHORT).show();
             } else if(data.getData()!=null){
                 // one photo selected
+                filenameList.clear();
+
+                Uri fileUri = data.getData();
+                String filename = getFileName(fileUri);
+
+                filenameList.add(filename);
+                fileUploadedList.add("uploading");
+                imgURIs.add(fileUri);
+                imgfileUrls.add(fileUri.toString());
+                mUploadListAdatper.notifyDataSetChanged();
+
+
+                Log.d(TAG, "onActivityResult: filenameList so far : " + filename);
+                Log.d(TAG, "onActivityResult: image file without append " + fileUri.toString());
+                Log.d(TAG, "onActivityResult: image file urls so far : " + imgfileUrls);
+
+
                 Toast.makeText(mContext, "Select one file.", Toast.LENGTH_SHORT).show();
-            } 
+//                fileUploadedList.clear();
+            }
+
         }
     }
 
-    public void addNewPhotoToDatabase(String url){
-
-        Log.d(TAG, "addNewPhotoToDatabase: add photo to the firbase database.");
-
-
-        String newKey = myRef.child(getString(R.string.dbname_user_photos)).push().getKey();
-        assert newKey != null;
-
-        myRef.child(getString(R.string.dbname_user_photos)).child(getString(R.string.category_test))
-                .child(newKey).setValue(url);
-
-
+    private void initImageLoader(){
+        Log.d(TAG, "initImageLoader: initiated.");
+        UniversalImageLoader universalImageLoader = new UniversalImageLoader(mContext);
+        ImageLoader.getInstance().init(universalImageLoader.getConfig());
     }
+
+
 
     public String getFileName(Uri uri){
         String result = null;
@@ -340,44 +347,39 @@ public class GalleryActivity extends AppCompatActivity implements ShowAllPhotos.
         mNext_toolbar_layout.setVisibility(View.GONE);
     }
 
+    @Override
+    public void onBackPressed() {
+        if(getSupportFragmentManager().getBackStackEntryCount()>0){
+            getSupportFragmentManager().popBackStack();
+            hideFrameLayout();
+        } else {
 
-    /**
-     * firebase
-     */
-    private void setupFirebase() {
-        Log.d(TAG, "setupFirebase: setting up firebase auth.");
-        mAuth = FirebaseAuth.getInstance();
-        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth){
-                FirebaseUser user = firebaseAuth.getCurrentUser();
+            Log.d(TAG, "onBackPressed: image url in the activity size : "+imgfileUrls.size());
+            Log.d(TAG, "onBackPressed: image urls size : "+UploadListAdatper.imgfileUrls.size());
 
-                if(user!=null){
-                    Log.d(TAG, "onAuthStateChanged: sign in"+user.getUid());
-                } else{
-                    Log.d(TAG, "onAuthStateChanged: sign out");
-                }
+
+            if(mFrameLayout_only_recyclerview.getVisibility() == View.VISIBLE
+                    && mRelParentLayout.getVisibility()== View.GONE){
+                Intent intent = new Intent(this, GalleryActivity.class);
+                startActivity(intent);
+            } else if(mFrameLayout_only_recyclerview.getVisibility() == View.VISIBLE){
+                showRecyclerLayout();
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "select pictures"), RESULT_LOAD_IMAGE);
+
+
             }
-        };
 
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        myRef = mFirebaseDatabase.getReference();
-        mStorageReference = FirebaseStorage.getInstance().getReference();
+
+
+
+        }
+
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        // Check if user is signed in
-        mAuth.addAuthStateListener(mAuthStateListener);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        // Check if user is signed in.
-        if(mAuthStateListener!=null) mAuth.removeAuthStateListener(mAuthStateListener);
-    }
 
 
 }

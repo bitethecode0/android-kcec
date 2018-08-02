@@ -10,6 +10,9 @@
     <color name="orange">#FF4500</color>
     <color name="darkgray">#A9A9A9</color>
     <color name="grey">#808080</color>
+    <color name="lightgrey">#D3D3D3</color>
+    <color name="green">#228B22</color>
+    <color name="purple">#EE82EE</color>
 
     <!--background color for the menu bar-->
     <color name="background_menu">#b3fff0</color>

@@ -1,7 +1,6 @@
 package com.example.joon.kcec.Gallery;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -28,19 +27,21 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ShowAllPhotos extends Fragment {
+public class ShowAllPhotosFragment extends Fragment {
 
     public interface OnGridImageSelectedListener{
         void onGridImageSelected(Photo photo, int activity_num);
     }
     OnGridImageSelectedListener mOnGridImageSelectedListener;
 
-    private static final String TAG = "ShowAllPhotos";
+
+
+
+    private static final String TAG = "ShowAllPhotosFragment";
     private static final int NUM_GRID_COLUMS = 3;
     private static final int ACTIVITY_NUM = 3;
 
@@ -104,11 +105,19 @@ public class ShowAllPhotos extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot ds : dataSnapshot.getChildren()){
                     try{
-                        Log.d(TAG, "onDataChange: data searching...");
-                        Photo photo = new Photo();
 
-                        photo.setImage_path(ds.getValue(String.class));
-                        Log.d(TAG, "onDataChange: image path : "+photo.getImage_path());
+                        // now needs to use hashmap
+                        Photo photo = new Photo();
+                        Map<String, Object> objectMap = (HashMap<String, Object>)ds.getValue();
+                        photo.setCaption(objectMap.get("caption").toString());
+                        photo.setImage_path(objectMap.get("image_path").toString());
+
+//                        Log.d(TAG, "onDataChange: data searching...");
+//                        Photo photo = new Photo();
+//
+//                        photo.setImage_path(ds.getValue(Photo.class).getImage_path());
+//                        photo.setCaption(ds.getValue(Photo.class).getCaption());
+//                        Log.d(TAG, "onDataChange: image path : "+photo.getImage_path());
                         photos.add(photo);
                     } catch (NullPointerException e){
                         Log.e(TAG, "onDataChange: NullPointerException"+e.getMessage());
@@ -120,7 +129,7 @@ public class ShowAllPhotos extends Fragment {
                  *  img urls for gridview settings
                  */
                 ArrayList<String> imageUrls=new ArrayList<>();
-                for(int i =0; i< photos.size(); i++){
+                for(int i =photos.size()-1; i>= 0; i--){
                     imageUrls.add(photos.get(i).getImage_path());
 
                 }
@@ -210,4 +219,8 @@ public class ShowAllPhotos extends Fragment {
         }
         super.onAttach(context);
     }
+
+
+
+
 }

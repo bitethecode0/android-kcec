@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+
+    >
+
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/relLayout">
+
+        <include layout="@layout/snippet_event_detail_topbar"/>
+
+    </RelativeLayout>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/edittext_rec_background"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp"
+        android:id="@+id/show_date_tv"
+
+        android:textSize="18sp"
+        android:padding="10dp"
+
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_margin="20dp"
+        android:background="@drawable/edittext_rec_background"
+
+
+        >
+        <RelativeLayout
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:id="@+id/relLayout1">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="type"
+                android:textAlignment="center"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/category"/>
+
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/category"
+                android:id="@+id/spinner"
+                android:layout_centerVertical="true">
+
+            </Spinner>
+
+        </RelativeLayout>
+
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/input_eventname"
+            android:hint="@string/hint_event_name"
+            android:background="@null"
+            android:layout_toRightOf="@+id/relLayout1"
+            android:layout_marginStart="5dp"
+            android:paddingTop="5dp"
+            android:paddingLeft="5dp"
+            />
+
+    </RelativeLayout>
+
+
+
+
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/input_eventlocation"
+        android:layout_margin="20dp"
+        android:hint="@string/hint_event_location"
+        android:background="@drawable/edittext_rec_background"
+        android:gravity="start"
+        android:paddingTop="5dp"
+        android:paddingLeft="5dp"
+
+        />
+
+
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_margin="20dp"
+
+        android:id="@+id/input_eventdescription"
+        android:hint="@string/hint_event_description"
+        android:gravity="start"
+        android:background="@drawable/edittext_rec_background"
+        android:paddingTop="5dp"
+        android:paddingLeft="5dp"
+        android:inputType="textMultiLine"
+
+        />
+
+
+
+
+
+
+</LinearLayout>

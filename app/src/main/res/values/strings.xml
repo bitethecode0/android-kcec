@@ -12,7 +12,9 @@
     <!-- firebase database-->
     <string name="dbname_users">users</string>
     <string name="dbname_user_photos">photos</string>
+    <string name="dbname_events">events</string>
 
+    <string name="field_date">date</string>
     <string name="field_email">email</string>
     <string name="field_phone_number">phone_number</string>
     <string name="field_username">username</string>
@@ -22,7 +24,7 @@
     <!--fragment-->
     <string name="edit_profile_fragment">Edit Profile</string>
     <string name="sign_out_frament">Sign Out</string>
-
+    <string name="event_detail_fragment">Event Detail</string>
     <string name="view_post_fragment">View Post</string>
     <string name="show_all_photos_fragmet">Show All Photos</string>
 
@@ -30,6 +32,19 @@
     <string name="photo">photo</string>
     <string name="activity_num">activity_num</string>
     <string name="image_urls">image urls</string>
+    <string name="image_uris">image uris</string>
+    <string name="img_filename">img filename</string>
+    <string name="date_info">date info</string>
+
+
+    <!--hint for event-->
+    <string name="hint_event_description">Event description</string>
+    <string name="hint_event_location">Location</string>
+    <string name="hint_event_name">Event name</string>
+
+    <!--event name-->
+    <string name="weekly_event">Weekly Event</string>
+    <string name="special_event">Special Event</string>
 
     <!--test-->
     <string name="category_test">test</string>

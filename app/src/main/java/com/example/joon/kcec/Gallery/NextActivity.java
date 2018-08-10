@@ -49,7 +49,6 @@ public class NextActivity extends AppCompatActivity {
     //vars
     private Context mContext;
     private List<String> imgFilename;
-    private List<String> imgUrls;
     private List<Uri> imgURIs;
 
     @Override
@@ -72,14 +71,14 @@ public class NextActivity extends AppCompatActivity {
                  *  1. add new photos to the firebase
                  *  2. navigate back to the gallery
                  */
-                if(imgUrls!=null && imgURIs!=null && imgFilename!=null){
+                if (imgURIs != null && imgFilename != null) {
                     uploadPhotoToStorage(imgURIs);
-                } else{
+                } else {
                     Toast.makeText(mContext, "something went wrong.", Toast.LENGTH_SHORT).show();
                 }
 
                 Toast.makeText(mContext, "Photos uploaded.", Toast.LENGTH_SHORT).show();
-                
+
                 Intent intent = new Intent(NextActivity.this, GalleryActivity.class);
                 startActivity(intent);
                 finish();
@@ -90,42 +89,36 @@ public class NextActivity extends AppCompatActivity {
         mPhotos_caption = findViewById(R.id.photos_caption);
 
         imgFilename = new ArrayList<>();
-        imgUrls = new ArrayList<>();
         imgURIs = new ArrayList<>();
 
         setupFirebase();
         getIncomingIntent();
-        
+
     }
 
-    private void getIncomingIntent(){
+    private void getIncomingIntent() {
         Intent intent = getIntent();
 
-        if(intent.hasExtra(getString(R.string.image_urls))){
-            Log.d(TAG, "getIncomingIntent: new incoming image urls. : "+intent.getStringArrayListExtra(getString(R.string.image_urls)));
-            imgUrls = intent.getStringArrayListExtra(getString(R.string.image_urls));
 
-        }
-        
-        if(intent.hasExtra(getString(R.string.img_filename))){
-            Log.d(TAG, "getIncomingIntent: new image filenames : "+intent.getStringArrayListExtra(getString(R.string.img_filename)));
+        if (intent.hasExtra(getString(R.string.img_filename))) {
+            Log.d(TAG, "getIncomingIntent: new image filenames : " + intent.getStringArrayListExtra(getString(R.string.img_filename)));
             imgFilename = intent.getStringArrayListExtra(getString(R.string.img_filename));
         }
-        if(intent.hasExtra(getString(R.string.image_uris))){
+        if (intent.hasExtra(getString(R.string.image_uris))) {
             Log.d(TAG, "getIncomingIntent: new incoming image uris to upload to the firebase storage."
                     + intent.getParcelableArrayListExtra(getString(R.string.image_uris)));
             imgURIs = intent.getParcelableArrayListExtra(getString(R.string.image_uris));
-            
-        }           
+
+        }
     }
-    
-    public void uploadPhotoToStorage(List<Uri> imageUris){
-                
-        for(int i =0; i<imageUris.size(); i++){
+
+    public void uploadPhotoToStorage(List<Uri> imageUris) {
+
+        for (int i = 0; i < imageUris.size(); i++) {
 
             String filename = imgFilename.get(i);
-            final StorageReference fileToUpload =mStorageReference.child("photos").child("new album").child(filename);
-            
+            final StorageReference fileToUpload = mStorageReference.child("photos").child("new album").child(filename);
+
             UploadTask uploadTask = fileToUpload.putFile(imageUris.get(i));
 
             uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -150,33 +143,20 @@ public class NextActivity extends AppCompatActivity {
                     if (!task.isSuccessful()) {
 
                     } else {
-                        Uri downloadUri = task.getResult();                        
+                        Uri downloadUri = task.getResult();
                         addNewPhotoToDatabase(downloadUri.toString());
                     }
                 }
             });
         }
-        
-    }
-    
 
-    public void addNewPhotoToDatabase(String url){
+    }
+
+
+    public void addNewPhotoToDatabase(String url) {
 
         Log.d(TAG, "addNewPhotoToDatabase: add photo to the firbase database.");
-        Log.d(TAG, "addNewPhotoToDatabase: image url list size is : "+imgUrls.size());
-        
 
-       /* for(int i =0; i<imgUrls.size(); i++){            
-
-            Photo photo = new Photo();
-            photo.setImage_path(imgUrls.get(i));
-            photo.setCaption(mPhotos_caption.getText().toString());
-            String newKey = myRef.child(getString(R.string.dbname_user_photos)).push().getKey();
-            assert newKey != null;
-
-            myRef.child(getString(R.string.dbname_user_photos)).child(getString(R.string.category_test))
-                    .child(newKey).setValue(photo);
-        }*/
 
         Photo photo = new Photo();
         photo.setImage_path(url);
@@ -186,7 +166,6 @@ public class NextActivity extends AppCompatActivity {
 
         myRef.child(getString(R.string.dbname_user_photos)).child(getString(R.string.category_test))
                 .child(newKey).setValue(photo);
-
 
 
     }
@@ -199,12 +178,12 @@ public class NextActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth){
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
 
-                if(user!=null){
-                    Log.d(TAG, "onAuthStateChanged: sign in"+user.getUid());
-                } else{
+                if (user != null) {
+                    Log.d(TAG, "onAuthStateChanged: sign in" + user.getUid());
+                } else {
                     Log.d(TAG, "onAuthStateChanged: sign out");
                 }
             }
@@ -225,6 +204,6 @@ public class NextActivity extends AppCompatActivity {
     public void onStop() {
         super.onStop();
         // Check if user is signed in.
-        if(mAuthStateListener!=null) mAuth.removeAuthStateListener(mAuthStateListener);
+        if (mAuthStateListener != null) mAuth.removeAuthStateListener(mAuthStateListener);
     }
 }

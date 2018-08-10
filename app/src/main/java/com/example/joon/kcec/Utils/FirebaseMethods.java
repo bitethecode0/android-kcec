@@ -67,10 +67,6 @@ public class FirebaseMethods {
         myRef.child(mContext.getString(R.string.dbname_users))
                 .child(user_id)
                 .setValue(user);
-
-
-
-
     }
 
     /**
@@ -116,6 +112,15 @@ public class FirebaseMethods {
                 .child(user_id)
                 .child(mContext.getString(R.string.field_username))
                 .setValue(username);
+    }
+
+    public void updateUserEmail(String useremail) {
+        Log.d(TAG, "updateUsername: update username to : "+useremail);
+
+        myRef.child(mContext.getString(R.string.dbname_users))
+                .child(user_id)
+                .child(mContext.getString(R.string.field_email))
+                .setValue(useremail);
     }
 
 

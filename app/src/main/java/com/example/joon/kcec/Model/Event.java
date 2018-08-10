@@ -1,8 +1,11 @@
 package com.example.joon.kcec.Model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.Date;
 
-public class Event {
+public class Event implements Parcelable {
     private String event_name;
     private String event_location;
     private String event_description;
@@ -19,6 +22,25 @@ public class Event {
         this.event_category = event_category;
         this.date = date;
     }
+
+    protected Event(Parcel in) {
+        event_name = in.readString();
+        event_location = in.readString();
+        event_description = in.readString();
+        event_category = in.readString();
+    }
+
+    public static final Creator<Event> CREATOR = new Creator<Event>() {
+        @Override
+        public Event createFromParcel(Parcel in) {
+            return new Event(in);
+        }
+
+        @Override
+        public Event[] newArray(int size) {
+            return new Event[size];
+        }
+    };
 
     public String getEvent_name() {
         return event_name;
@@ -63,5 +85,18 @@ public class Event {
     @Override
     public String toString() {
         return super.toString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(event_name);
+        dest.writeString(event_location);
+        dest.writeString(event_description);
+        dest.writeString(event_category);
     }
 }

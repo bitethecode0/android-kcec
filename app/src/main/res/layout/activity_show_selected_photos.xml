@@ -6,4 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".Gallery.ShowSelectedPhotosActivity">
 
+    <include layout="@layout/layout_frame_only_recyclerview"/>
+
 </android.support.constraint.ConstraintLayout>

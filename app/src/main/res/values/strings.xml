@@ -7,13 +7,15 @@
     <string name="close">Close</string>
 
     <!-- Menu item -->
+
+
     <string name="qanda">Q &amp; A</string>
 
     <!-- firebase database-->
     <string name="dbname_users">users</string>
     <string name="dbname_user_photos">photos</string>
     <string name="dbname_events">events</string>
-
+    <string name="dbname_questions">questions</string>
     <string name="field_date">date</string>
     <string name="field_email">email</string>
     <string name="field_phone_number">phone_number</string>
@@ -24,9 +26,12 @@
     <!--fragment-->
     <string name="edit_profile_fragment">Edit Profile</string>
     <string name="sign_out_frament">Sign Out</string>
-    <string name="event_detail_fragment">Event Detail</string>
+    <string name="event_input_fragment">Event Input</string>
+    <string name="event_view_detail_fragment">Event Details</string>
     <string name="view_post_fragment">View Post</string>
     <string name="show_all_photos_fragmet">Show All Photos</string>
+    <string name="question_detail_fragment">Question Detail</string>
+    <string name="question_view_fragment">View Question</string>
 
     <!--bundle-->
     <string name="photo">photo</string>
@@ -35,7 +40,8 @@
     <string name="image_uris">image uris</string>
     <string name="img_filename">img filename</string>
     <string name="date_info">date info</string>
-
+    <string name="question_info">question info</string>
+    <string name="event_detail_info">event detail info</string>
 
     <!--hint for event-->
     <string name="hint_event_description">Event description</string>
@@ -46,7 +52,16 @@
     <string name="weekly_event">Weekly Event</string>
     <string name="special_event">Special Event</string>
 
+    <!--dialog message-->
+    <string name="dialog_name_events">event dialog</string>
+    <string name="dialog_message">here is example</string>
+    <string name="newpost_event">new event</string>
+
+    <!--gallery-->
+    <string name="all_photos">all photos</string>
+
     <!--test-->
     <string name="category_test">test</string>
+    <string name="title_activity_base">BaseActivity</string>
 
 </resources>

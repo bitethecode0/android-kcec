@@ -74,9 +74,7 @@
             android:hint="@string/hint_event_name"
             android:background="@null"
             android:layout_toRightOf="@+id/relLayout1"
-            android:layout_marginStart="5dp"
-            android:paddingTop="5dp"
-            android:paddingLeft="5dp"
+            android:padding="10dp"
             />
 
     </RelativeLayout>
@@ -93,8 +91,7 @@
         android:hint="@string/hint_event_location"
         android:background="@drawable/edittext_rec_background"
         android:gravity="start"
-        android:paddingTop="5dp"
-        android:paddingLeft="5dp"
+        android:padding="10dp"
 
         />
 
@@ -109,8 +106,7 @@
         android:hint="@string/hint_event_description"
         android:gravity="start"
         android:background="@drawable/edittext_rec_background"
-        android:paddingTop="5dp"
-        android:paddingLeft="5dp"
+        android:padding="10dp"
         android:inputType="textMultiLine"
 
         />

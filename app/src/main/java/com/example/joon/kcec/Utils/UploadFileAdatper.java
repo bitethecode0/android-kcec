@@ -3,7 +3,6 @@ package com.example.joon.kcec.Utils;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
@@ -14,34 +13,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.example.joon.kcec.R;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-public class UploadListAdatper extends RecyclerView.Adapter<UploadListAdatper.Viewholder> {
-    private static final String TAG = "UploadListAdatper";
+public class UploadFileAdatper extends RecyclerView.Adapter<UploadFileAdatper.Viewholder> {
+    private static final String TAG = "UploadFileAdatper";
 
     public List<String> filenameList;
     public static List<String> fileUploadedList;
-    public static List<String> imgfileUrls;
+    public static List<Uri> imgfileUrls;
 
 
-    public UploadListAdatper(List<String> filenameList, List<String> fileUploadedList
-            , List<String> imgfileUrls){
+    public UploadFileAdatper(List<String> filenameList, List<Uri> imgfileUrls){
         this.filenameList = filenameList;
-        UploadListAdatper.fileUploadedList = fileUploadedList;
-        UploadListAdatper.imgfileUrls = imgfileUrls;
+        UploadFileAdatper.imgfileUrls = imgfileUrls;
     }
 
     @NonNull
@@ -57,7 +50,7 @@ public class UploadListAdatper extends RecyclerView.Adapter<UploadListAdatper.Vi
         String filename = filenameList.get(position);
 //        holder.filenameView.setText(filename);
 
-        String url = imgfileUrls.get(position);
+        String url = imgfileUrls.get(position).toString();
 
         Log.d(TAG, "onBindViewHolder: image url : "+url);
 

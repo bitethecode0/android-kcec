@@ -4,12 +4,13 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import android.widget.CalendarView;
 
+import com.example.joon.kcec.Home.HomeActivity;
 import com.example.joon.kcec.Model.Event;
 import com.example.joon.kcec.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -18,7 +19,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.roomorama.caldroid.CaldroidFragment;
 import com.roomorama.caldroid.CaldroidListener;
@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-public class EventsActivity extends AppCompatActivity implements EventDetailFragment.OnDataPass {
+public class EventsActivity extends HomeActivity implements EventNewEventFragment.OnDataPass {
     private static final String TAG = "EventsFragment";
 
     @Override
@@ -52,22 +52,27 @@ public class EventsActivity extends AppCompatActivity implements EventDetailFrag
     private ArrayList<Event> allEvents = new ArrayList<>(); // firebase database
     private String category;
 
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_events);
+
+        getLayoutInflater().inflate(R.layout.activity_events, mBaseFrameLayout);
+
+        navigation_view.post(new Runnable() {
+            @Override
+            public void run() {
+                navigation_view.getMenu().getItem(4).setChecked(true);
+            }
+        });
+        mTitle.post(new Runnable() {
+            @Override
+            public void run() {
+                mTitle.setText("Events");
+            }
+        });
         setupFirebase();
-
-
-//        /*mCalendarView = findViewById(R.id.calendarView);
-//        mCalendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-//            @Override
-//            public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-//                String date = (month+1)+"/"+dayOfMonth+"/"+year;
-//                Log.d(TAG, "onSelectedDayChange: date selected : "+date);
-//            }
-//        });*/
-
 
     }
 
@@ -90,7 +95,7 @@ public class EventsActivity extends AppCompatActivity implements EventDetailFrag
         transaction.replace(R.id.test_container, caldroidFragment);
         transaction.commit();
 
-//        showAllEvent();
+
 
         final CaldroidListener listener = new CaldroidListener() {
             @Override
@@ -104,15 +109,12 @@ public class EventsActivity extends AppCompatActivity implements EventDetailFrag
 
                 Log.d(TAG, "onSelectDate: month  : "+month+"/"+day+"/"+year);
 
-                Fragment fragment = new EventDetailFragment();
-                Bundle args= new Bundle();
-                args.putSerializable(getString(R.string.date_info), date);
-                fragment.setArguments(args);
+                /**
+                 * show dialog
+                 */
+                showDialog();
 
-                android.support.v4.app.FragmentTransaction transaction1 = getSupportFragmentManager().beginTransaction();
-                transaction1.replace(R.id.test_container, fragment);
-                transaction1.addToBackStack(getString(R.string.event_detail_fragment));
-                transaction1.commit();
+
             }
         };
         caldroidFragment.setCaldroidListener(listener);
@@ -120,16 +122,30 @@ public class EventsActivity extends AppCompatActivity implements EventDetailFrag
 
     }
 
+    private void showDialog() {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        DialogFragment newFragment = EventDialogFragment.newInstance(selectedDate);
+        newFragment.show(transaction, "dialog");
+
+    }
+
+
+
     public void setSelectedDateColor(String category, Date selectedDate){
         Log.d(TAG, "setSelectedDateColor: color the background of events.");
         ColorDrawable green = new ColorDrawable(getResources().getColor(R.color.green));
         ColorDrawable purple = new ColorDrawable(getResources().getColor(R.color.purple));
 
-        if (category.equals(getString(R.string.weekly_event))) {
-            caldroidFragment.setBackgroundDrawableForDate(green, selectedDate);
-        } else if (category.equals(getString(R.string.special_event))) {
-            caldroidFragment.setBackgroundDrawableForDate(purple, selectedDate);
+        try{
+            if (category.equals(getString(R.string.weekly_event))) {
+                caldroidFragment.setBackgroundDrawableForDate(green, selectedDate);
+            } else if (category.equals(getString(R.string.special_event))) {
+                caldroidFragment.setBackgroundDrawableForDate(purple, selectedDate);
+            }
+        } catch (NullPointerException e){
+            Log.e(TAG, "setSelectedDateColor: NullPointerException"+e.getMessage() );
         }
+
     }
 
 
@@ -219,7 +235,7 @@ public class EventsActivity extends AppCompatActivity implements EventDetailFrag
                             allEvents.add(ds.getValue(Event.class));
                         }
 
-                        Log.d(TAG, "onDataChange: selected date/event category : " + allEvents.get(0).getDate() + " " + allEvents.get(0).getEvent_category());
+                        //Log.d(TAG, "onDataChange: selected date/event category : " + allEvents.get(0).getDate() + " " + allEvents.get(0).getEvent_category());
                         /*for (int i = 0; i < allEvents.size(); i++) {
                             setSelectedDateColor(allEvents.get(i).getEvent_category(), allEvents.get(i).getDate());
                         }*/

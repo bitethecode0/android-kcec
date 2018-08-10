@@ -27,11 +27,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class EventDetailFragment extends Fragment{
-    private static final String TAG = "EventDetailFragment";
+public class EventNewEventFragment extends Fragment{
+    private static final String TAG = "EventNewEventFragment";
 
     public interface OnDataPass{
         public void onDatapass(String category, Date date);
@@ -59,7 +60,7 @@ public class EventDetailFragment extends Fragment{
     private ArrayList<String> event_category;
     private String category;
 
-    public EventDetailFragment(){
+    public EventNewEventFragment(){
         super();
         setArguments(new Bundle());
         mContext = getContext();
@@ -170,8 +171,10 @@ public class EventDetailFragment extends Fragment{
         event.setEvent_location(eventLocation);
         event.setEvent_description(eventDescription);
 
+        String newKey = myRef.push().getKey();
+
         myRef.child(getString(R.string.dbname_events)).
-                child(getString(R.string.field_date)).child(String.valueOf(date)).setValue(event);
+                child(getString(R.string.field_date)).child(newKey).setValue(event);
 
     }
 

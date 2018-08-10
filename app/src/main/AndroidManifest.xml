@@ -16,7 +16,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginNRegister.LoginActivity"></activity>
+        <activity android:name=".LoginNRegister.LoginActivity" />
         <activity android:name=".LoginNRegister.RegisterActivity" />
         <activity android:name=".AccountSettings.AccountActivity" />
 
@@ -27,7 +27,7 @@
         <activity android:name=".QuestionAnswer.QandAActivity" />
         <activity android:name=".Events.EventsActivity" />
         <activity android:name=".Gallery.NextActivity" />
-        <activity android:name=".Gallery.ShowSelectedPhotosActivity"></activity>
+        <activity android:name=".Gallery.ShowSelectedPhotosActivity" />
     </application>
 
 </manifest>

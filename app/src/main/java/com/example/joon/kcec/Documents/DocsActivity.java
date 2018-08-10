@@ -1,15 +1,27 @@
 package com.example.joon.kcec.Documents;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.example.joon.kcec.Home.HomeActivity;
 import com.example.joon.kcec.R;
 
-public class DocsActivity extends AppCompatActivity {
+public class DocsActivity extends HomeActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_docs);
+        getLayoutInflater().inflate(R.layout.activity_docs, mBaseFrameLayout);
+        navigation_view.post(new Runnable() {
+            @Override
+            public void run() {
+                navigation_view.getMenu().getItem(1).setChecked(true);
+            }
+        });
+        mTitle.post(new Runnable() {
+            @Override
+            public void run() {
+                mTitle.setText("Documents");
+            }
+        });
     }
 }

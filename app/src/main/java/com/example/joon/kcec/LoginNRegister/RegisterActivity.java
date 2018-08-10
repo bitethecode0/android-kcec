@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,6 +24,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.UUID;
 
 public class RegisterActivity extends AppCompatActivity {
     private static final String TAG = "RegisterActivity";
@@ -66,12 +69,14 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void init() {
 
-        mUserName.setOnClickListener(new View.OnClickListener() {
+        mPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                top_tv.setText("Username : firstname.lastname.");
+                top_tv.setTextSize(TypedValue.COMPLEX_UNIT_SP,20f);
+                top_tv.setText("At least 8 characters.");
             }
         });
+
 
         mRegister_btn = findViewById(R.id.register_btn);
         mRegister_btn.setOnClickListener(new View.OnClickListener() {
@@ -96,7 +101,7 @@ public class RegisterActivity extends AppCompatActivity {
     private void checkIfUserExists(final String username) {
         Log.d(TAG, "checkIfUserExists: cheking if "+username
         +" already exists");
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        final DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference.child(getString(R.string.dbname_users))
                 .orderByChild(getString(R.string.field_username))
                 .equalTo(username);
@@ -107,13 +112,17 @@ public class RegisterActivity extends AppCompatActivity {
                 for(DataSnapshot singleSnap : dataSnapshot.getChildren()){
                     if(singleSnap.exists()){
                         Log.d(TAG, "onDataChange: found the match "+singleSnap.getValue(User.class).getUsername());
-                        append = myRef.push().getKey().substring(3,7);
-                        Log.d(TAG, "onDataChange: chnaged the username temporilily as"+username+append );
+                        append = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                        Log.d(TAG, "onDataChange: chnaged the username temporilily as"+username+append.substring(3,7) );
                     }
                 }
 
                 String modifiedUsername;
-                modifiedUsername = username+append;
+                if(append!=null){
+                    modifiedUsername = username+append;
+                } else{
+                    modifiedUsername = username;
+                }
                 mFirebaseMethods.addNewUserToDatabase(email,0, modifiedUsername);
                 mAuth.signOut();
 

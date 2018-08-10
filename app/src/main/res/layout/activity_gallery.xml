@@ -1,25 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Gallery.GalleryActivity">
 
 
 
 
     <include layout="@layout/layout_frame" />
-    <include layout="@layout/layout_frame_only_recyclerview"/>
+    <!--<include layout="@layout/layout_frame_only_recyclerview"/>-->
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/relParent">
-
-
-
-
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -33,23 +29,35 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:id="@+id/relLayout2"
             android:layout_below="@+id/relLayout1">
 
-            <include layout="@layout/snippet_all_photos"/>
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/recyclerView_gallery">
 
+
+            </android.support.v7.widget.RecyclerView>
 
         </RelativeLayout>
 
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fabSize="auto"
+            app:borderWidth="0dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="20dp"
+            android:layout_marginEnd="20dp"
+            android:backgroundTint="@color/white"
+            android:src="@drawable/ic_add_1"
+            android:id="@+id/add_photo_btn"
+            />
 
 
     </RelativeLayout>
-
-
-
-
-
-
 
 </android.support.design.widget.CoordinatorLayout>

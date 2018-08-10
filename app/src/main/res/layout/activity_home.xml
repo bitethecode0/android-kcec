@@ -18,9 +18,16 @@
 
         <include layout="@layout/snippet_top_profilebar"/>
 
-
-
     </RelativeLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/frameLayout_base"
+        android:layout_marginTop="50dp">
+
+    </FrameLayout>
+
 
     <android.support.design.widget.NavigationView
         android:layout_width="wrap_content"

@@ -1,18 +1,25 @@
 package com.example.joon.kcec.Home;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.joon.kcec.AccountSettings.AccountActivity;
 import com.example.joon.kcec.Announcement.AnnoucementActivity;
@@ -20,16 +27,19 @@ import com.example.joon.kcec.Documents.DocsActivity;
 import com.example.joon.kcec.Events.EventsActivity;
 import com.example.joon.kcec.Gallery.GalleryActivity;
 import com.example.joon.kcec.LoginNRegister.LoginActivity;
+import com.example.joon.kcec.Model.User;
 import com.example.joon.kcec.QuestionAnswer.QandAActivity;
 import com.example.joon.kcec.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 public class HomeActivity extends AppCompatActivity {
-
-
-
-
 
     private static final String TAG = "HomeActivity";
 
@@ -41,14 +51,19 @@ public class HomeActivity extends AppCompatActivity {
     //widgtes
     private ImageView profileMenu;
     private ImageView mainMenu;
-    private DrawerLayout mDrawerLayout;
+    protected DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
-    private NavigationView navigation_view;
-
+    protected NavigationView navigation_view;
+    protected FrameLayout mBaseFrameLayout;
+    protected TextView mTitle;
+    protected Toolbar mToolbar;
 
     //vars
     private Context mContext;
+    private User user;
 
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +71,9 @@ public class HomeActivity extends AppCompatActivity {
         setupFirebase();
 
         mContext= HomeActivity.this;
+        mBaseFrameLayout = findViewById(R.id.frameLayout_base);
+        mTitle = findViewById(R.id.profileUsername);
+
 
         mDrawerLayout = findViewById(R.id.drawerLayout);
         mDrawerLayout.setBackgroundResource(R.color.background_menu);
@@ -81,13 +99,16 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
+    /*protected void checkItemSelected(MenuItem item, boolean trueOrFalse){
+        item.setCheckable(trueOrFalse);
+    }*/
+
     private void setupDrawerContent(final NavigationView navigationView){
-
-
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
+                /*checkItemSelected(item, true);*/
                 item.setCheckable(true);
                 selectDrawerItem(item);
 
@@ -158,6 +179,34 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
         };
+
+
+        try{
+            DatabaseReference ref  = FirebaseDatabase.getInstance().getReference();
+            Query query = ref.child(getString(R.string.dbname_users)).
+                    child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    user = dataSnapshot.getValue(User.class);
+                    Log.d(TAG, "onDataChange: username here "+user.getUsername());
+
+
+
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        } catch (NullPointerException e){
+            Log.e(TAG, "setupFirebase: NullPointerException"+e.getMessage() );
+        }
+
     }
 
 

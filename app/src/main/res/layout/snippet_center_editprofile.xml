@@ -28,32 +28,7 @@
                 android:id="@+id/changePhoto_tv"
                 android:layout_centerHorizontal="true"/>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/relLayout1"
-                android:layout_below="@+id/changePhoto_tv"
-                android:padding="15dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:text="Name"
-                    android:id="@+id/name_tv"
-                    android:textSize="18sp"
-                    />
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/name_tv"
-                    android:id="@+id/input_name"
-                    android:textColor="@color/black"
-                    />
-
-
-            </RelativeLayout>
 
             <RelativeLayout
             android:layout_width="match_parent"
@@ -61,7 +36,7 @@
 
             android:id="@+id/relLayout2"
 
-            android:layout_below="@+id/relLayout1"
+            android:layout_below="@+id/changePhoto_tv"
             android:padding="15dp">
 
             <TextView

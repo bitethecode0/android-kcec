@@ -42,7 +42,7 @@ public class EditProfileFragment extends Fragment {
     private ImageView mBackArrow_btn, mCheckMark;
     private CircleImageView mProfile_image;
     private TextView mChangeProfileImage_btn;
-    private EditText mName, mUsername, mEmail;
+    private EditText mUsername, mEmail;
 
     //vars
     private User mUser;
@@ -52,7 +52,7 @@ public class EditProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_edit_profile, container, false);
         mProfile_image = view.findViewById(R.id.profile_image);
         mChangeProfileImage_btn = view.findViewById(R.id.changePhoto_tv);
-//        mName =view.findViewById(R.id.input_name);
+
         mUsername = view.findViewById(R.id.input_username);
         mEmail = view.findViewById(R.id.input_email);
 
@@ -82,10 +82,17 @@ public class EditProfileFragment extends Fragment {
     private void saveProfileInfo() {
 //        final String name = mName.getText().toString();
         final String username = mUsername.getText().toString();
-        if(!mUser.getUsername().equals(username)){
+        final String userEmail = mEmail.getText().toString();
+        if(!mUser.getUsername().equals(username)  ){
             checkIfUsernameExists(username);
         }
+        if(!mUser.getEmail().equals(userEmail)){
+            checkIfUserEmailExists(userEmail);
+        }
+
     }
+
+
 
     private void setProfileWidgets(User user){
         Log.d(TAG, "setProfileWidgets: set widgets with the data retrieved from the firebase"+user.toString());
@@ -108,12 +115,15 @@ public class EditProfileFragment extends Fragment {
                 if (!dataSnapshot.exists()){
                     mFirebaseMethods.updateUsername(username);
                     Toast.makeText(getActivity(), "saved username", Toast.LENGTH_SHORT).show();
+                    mCheckMark.setImageResource(R.drawable.ic_checkmark_1);
                 }
 
                 for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
                     Log.d(TAG, "onDataChange: found a match "+ singleSnapshot.getValue(User.class).getUsername());
                     Toast.makeText(getActivity(), "That username already exists.", Toast.LENGTH_SHORT).show();
+
                 }
+                mUsername.setText(mUser.getUsername());
             }
 
             @Override
@@ -122,6 +132,38 @@ public class EditProfileFragment extends Fragment {
             }
         });
 
+
+
+    }
+
+    private void checkIfUserEmailExists(final String userEmail) {
+        Log.d(TAG, "checkIfUsernameExists: checking if "+userEmail+ " already exists.");
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        Query query = reference.child(getString(R.string.dbname_users))
+                .orderByChild(getString(R.string.field_email))
+                .equalTo(userEmail);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.exists()){
+                    mFirebaseMethods.updateUserEmail(userEmail);
+                    Toast.makeText(getActivity(), "saved user email", Toast.LENGTH_SHORT).show();
+                    mCheckMark.setImageResource(R.drawable.ic_checkmark_1);
+                }
+
+                for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
+                    Log.d(TAG, "onDataChange: found a match "+ singleSnapshot.getValue(User.class).getEmail());
+                    Toast.makeText(getActivity(), "That username already exists.", Toast.LENGTH_SHORT).show();
+                }
+                mUsername.setText(mUser.getEmail());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
 

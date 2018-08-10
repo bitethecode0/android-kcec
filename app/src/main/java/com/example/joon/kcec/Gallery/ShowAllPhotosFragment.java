@@ -39,8 +39,6 @@ public class ShowAllPhotosFragment extends Fragment {
     OnGridImageSelectedListener mOnGridImageSelectedListener;
 
 
-
-
     private static final String TAG = "ShowAllPhotosFragment";
     private static final int NUM_GRID_COLUMS = 3;
     private static final int ACTIVITY_NUM = 3;
